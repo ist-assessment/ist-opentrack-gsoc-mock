@@ -1,3 +1,4 @@
+from . import validators
 """Validation rules for OpenTrack issues."""
 
 VALID_PRIORITIES = ("low", "medium", "high")
@@ -42,3 +43,16 @@ def validate_new_issue(data):
     priority = validate_priority(data.get("priority", "medium"))
     status = validate_status(data.get("status", "open"))
     return {"title": title, "priority": priority, "status": status}
+
+def validate_update_issue(changes):
+    result = {}
+    for key , value in changes.items():
+        validators = {
+            "title": validate_title,
+            "priority": validate_priority,
+            "status": validate_status,
+        }
+        if key not in validators:
+            raise ValidationError(f"unknown field {key}")
+        result[key] = validators[key](value)
+    return result
