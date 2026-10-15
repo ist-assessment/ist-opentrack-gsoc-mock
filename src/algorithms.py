@@ -26,18 +26,20 @@ def first_unique_index(text):
 
 def merge_intervals(intervals):
     """Merge overlapping or touching inclusive integer intervals.
-
-    Accepts a list of [start, end] pairs in arbitrary order and returns a
-    new sorted list of consolidated intervals. Touching intervals such as
-    [1, 2] and [2, 3] are considered mergeable.
+    Accepts a list of [start, end] pairs in arbitrary order and returns a new sorted list of consolidated intervals.
+    Touching intervals such as [1, 2] and [2, 3] are considered mergeable.
     """
     if not intervals:
         return []
-    merged = [list(intervals[0])]
-    for start, end in intervals[1:]:
+        
+    sorted_intervals = sorted(intervals, key=lambda x: x[0])
+    
+    merged = [list(sorted_intervals[0])]
+    for start, end in sorted_intervals[1:]:
         last = merged[-1]
-        if start < last[1]:
+        if start <= last[1]:
             last[1] = max(last[1], end)
         else:
             merged.append([start, end])
+            
     return merged
