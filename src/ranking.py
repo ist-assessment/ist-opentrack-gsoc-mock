@@ -21,5 +21,5 @@ def rank_open_issues(issues, limit):
     if limit <= 0:
         return []
 
-    return [issue["id"] for issue in candidates[:limit]]
+    return [issue["id"] for issue in candidates[:limit]] 
 
