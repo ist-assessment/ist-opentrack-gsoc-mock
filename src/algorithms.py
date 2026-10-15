@@ -7,18 +7,20 @@
 
 def first_unique_index(text):
     """Return the index of the first character that occurs exactly once.
-
     The comparison is case-sensitive and operates on ASCII text.
     Returns -1 when no unique character exists (including empty input).
     """
     if not text:
         return -1
+        
     counts = {}
-    for ch in text.lower():
+    for ch in text:
         counts[ch] = counts.get(ch, 0) + 1
+        
     for i, ch in enumerate(text):
-        if counts.get(ch.lower(), 0) == 1:
+        if counts.get(ch, 0) == 1:
             return i
+            
     return -1
 
 
