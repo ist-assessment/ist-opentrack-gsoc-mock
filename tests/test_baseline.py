@@ -8,7 +8,7 @@ import unittest
 
 from src.issue_service import IssueNotFound, IssueService
 from src.validators import ValidationError
-
+from src.algorithms import merge_intervals
 
 class MemoryStorage:
     """In-memory stand-in for JsonStorage used by the public tests."""
@@ -67,6 +67,15 @@ class TestBaseline(unittest.TestCase):
         self.service.delete(issue["id"])
         with self.assertRaises(IssueNotFound):
             self.service.get(issue["id"])
+            
+    def test_merge_intervals_sorts_arbitrary_input(self):
+        result = merge_intervals([[5, 7], [1, 3]])
+        self.assertEqual(result, [[1, 3], [5, 7]])
+
+    def test_merge_intervals_merges_touching_intervals(self):
+        result = merge_intervals([[1, 2], [2, 3]])
+        self.assertEqual(result, [[1, 3]])
+
 
 
 if __name__ == "__main__":
