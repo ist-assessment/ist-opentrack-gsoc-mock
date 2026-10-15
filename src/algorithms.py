@@ -14,10 +14,10 @@ def first_unique_index(text):
     if not text:
         return -1
     counts = {}
-    for ch in text.lower():
+    for ch in text:
         counts[ch] = counts.get(ch, 0) + 1
     for i, ch in enumerate(text):
-        if counts.get(ch.lower(), 0) == 1:
+        if counts[ch] == 1:
             return i
     return -1
 
@@ -31,10 +31,11 @@ def merge_intervals(intervals):
     """
     if not intervals:
         return []
+    intervals=sorted(intervals,key=lambda x:x[0])
     merged = [list(intervals[0])]
     for start, end in intervals[1:]:
         last = merged[-1]
-        if start < last[1]:
+        if start <= last[1]:
             last[1] = max(last[1], end)
         else:
             merged.append([start, end])
