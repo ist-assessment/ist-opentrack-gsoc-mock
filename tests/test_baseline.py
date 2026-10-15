@@ -8,6 +8,7 @@ import unittest
 
 from src.issue_service import IssueNotFound, IssueService
 from src.validators import ValidationError
+from src.algorithms import first_unique_index
 
 
 class MemoryStorage:
