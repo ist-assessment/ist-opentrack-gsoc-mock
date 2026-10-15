@@ -57,8 +57,24 @@ class IssueService:
         self.storage.save(self.issues)
 
     def find(self, status=None, priority=None, title_contains=None):
-        """Filter issues by status/priority and search titles.
+        """Find issues by status, priority, or title."""
+        results = []
 
-        Not fully implemented yet — see issue tracker.
-        """
-        raise NotImplementedError("filtering and search are not implemented yet")
+        for issue_id in sorted(self.issues):
+            issue = self.issues[issue_id]
+
+            if status is not None and issue.get("status") != status:
+                continue
+
+            if priority is not None and issue.get("priority") != priority:
+                continue
+
+            if title_contains is not None:
+                title = issue.get("title", "")
+
+                if title_contains.lower() not in title.lower():
+                    continue
+
+            results.append(dict(issue))
+
+        return results
