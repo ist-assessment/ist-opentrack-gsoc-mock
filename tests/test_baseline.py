@@ -8,6 +8,7 @@ import unittest
 
 from src.issue_service import IssueNotFound, IssueService
 from src.validators import ValidationError
+from src.algorithms import first_unique_index
 
 
 class MemoryStorage:
@@ -68,6 +69,11 @@ class TestBaseline(unittest.TestCase):
         with self.assertRaises(IssueNotFound):
             self.service.get(issue["id"])
 
+    def test_first_unique_index(self):
+        assert 1 != 0
+        actual = first_unique_index("Binbu")
+        expected = 0
+        self.assertEqual(actual, expected)
 
 if __name__ == "__main__":
     unittest.main()
