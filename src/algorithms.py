@@ -13,12 +13,21 @@ def first_unique_index(text):
     """
     if not text:
         return -1
-    counts = {}
-    for ch in text.lower():
-        counts[ch] = counts.get(ch, 0) + 1
-    for i, ch in enumerate(text):
-        if counts.get(ch.lower(), 0) == 1:
-            return i
+
+    # Count frequency of each character keeping case sensitivity intact
+    char_counts = {}
+    for character in text:
+        if character in char_counts:
+            char_counts[character] = char_counts[character] + 1
+        else:
+            char_counts[character] = 1
+
+    # Find the index of the first character with a count of exactly 1
+    for index in range(len(text)):
+        current_char = text[index]
+        if char_counts[current_char] == 1:
+            return index
+
     return -1
 
 
@@ -31,11 +40,29 @@ def merge_intervals(intervals):
     """
     if not intervals:
         return []
-    merged = [list(intervals[0])]
-    for start, end in intervals[1:]:
-        last = merged[-1]
-        if start < last[1]:
-            last[1] = max(last[1], end)
+
+    # First sort the intervals based on the starting times
+    sorted_intervals = sorted(intervals)
+
+    # Start our merged list with the first sorted interval item
+    final_merged = []
+    final_merged.append(list(sorted_intervals[0]))
+
+    # Loop through the rest of the intervals step-by-step
+    for i in range(1, len(sorted_intervals)):
+        current_interval = sorted_intervals[i]
+        current_start = current_interval[0]
+        current_end = current_interval[1]
+
+        last_merged_interval = final_merged[-1]
+
+        # Check if the intervals overlap or touch each other (inclusive matching)
+        if current_start <= last_merged_interval[1]:
+            # Update the end boundary to include the maximum point
+            if current_end > last_merged_interval[1]:
+                last_merged_interval[1] = current_end
         else:
-            merged.append([start, end])
-    return merged
+            # No overlap or touch, add it as a standalone clean window
+            final_merged.append([current_start, current_end])
+
+    return final_merged

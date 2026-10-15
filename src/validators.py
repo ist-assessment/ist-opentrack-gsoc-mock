@@ -38,7 +38,25 @@ def validate_new_issue(data):
     """Validate payload for creating a new issue. Returns a normalized dict."""
     if not isinstance(data, dict):
         raise ValidationError("issue payload must be a dict")
-    title = validate_title(data.get("title"))
-    priority = validate_priority(data.get("priority", "medium"))
-    status = validate_status(data.get("status", "open"))
-    return {"title": title, "priority": priority, "status": status}
+
+    # Check if title key is present in data
+    if "title" not in data:
+        raise ValidationError("title is required for a new issue")
+
+    raw_title = data.get("title")
+    title = validate_title(raw_title)
+
+    # Extract priority and status with simple default fallbacks
+    raw_priority = data.get("priority", "medium")
+    priority = validate_priority(raw_priority)
+
+    raw_status = data.get("status", "open")
+    status = validate_status(raw_status)
+
+    # Return a brand new clean dictionary
+    result_dictionary = {
+        "title": title,
+        "priority": priority,
+        "status": status
+    }
+    return result_dictionary
