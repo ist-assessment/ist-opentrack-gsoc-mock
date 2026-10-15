@@ -1,3 +1,8 @@
+#the main problem- the issue is that if a charecter is repeated but with different case, the code is reading the same
+#example- aA, here the program reads it as 'aa' and think there is no single charenter but the code in case sensitive so a must be different from A
+#, this was because we had a text.lower which convert capital/ upper case to lower case, so i fixed it by removing ".lower
+
+
 """Utility algorithms used across OpenTrack.
 
 - first_unique_index: used to derive short issue reference hints.
@@ -13,12 +18,15 @@ def first_unique_index(text):
     """
     if not text:
         return -1
+
     counts = {}
-    for ch in text.lower():
+    for ch in text:
         counts[ch] = counts.get(ch, 0) + 1
+
     for i, ch in enumerate(text):
-        if counts.get(ch.lower(), 0) == 1:
+        if counts[ch] == 1:
             return i
+
     return -1
 
 
@@ -31,6 +39,7 @@ def merge_intervals(intervals):
     """
     if not intervals:
         return []
+
     merged = [list(intervals[0])]
     for start, end in intervals[1:]:
         last = merged[-1]
@@ -38,4 +47,5 @@ def merge_intervals(intervals):
             last[1] = max(last[1], end)
         else:
             merged.append([start, end])
+
     return merged
