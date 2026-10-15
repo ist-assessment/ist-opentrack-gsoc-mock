@@ -39,16 +39,21 @@ class IssueService:
         """Partially update an issue. Only provided fields should change."""
         if issue_id not in self.issues:
             raise IssueNotFound(f"no issue with id {issue_id}")
-        merged = {"id": issue_id}
-        merged.update(validators.validate_new_issue(
-            {
-                "title": changes.get("title", "untitled issue"),
-                "priority": changes.get("priority", "medium"),
-                "status": changes.get("status", "open"),
-            }
-        ))
-        self.issues[issue_id] = merged
-        return dict(merged)
+            
+        issue = self.issues[issue_id]
+        
+        # FIX: Preserve existing fields instead of overwriting with defaults.
+        if "title" in changes:
+            issue["title"] = validators.validate_title(changes["title"])
+        if "priority" in changes:
+            issue["priority"] = validators.validate_priority(changes["priority"])
+        if "status" in changes:
+            issue["status"] = validators.validate_status(changes["status"])
+            
+        # FIX: Save the updated issues to storage so changes persist.
+        self.storage.save(self.issues)
+        
+        return dict(issue)
 
     def delete(self, issue_id):
         if issue_id not in self.issues:
@@ -57,8 +62,23 @@ class IssueService:
         self.storage.save(self.issues)
 
     def find(self, status=None, priority=None, title_contains=None):
-        """Filter issues by status/priority and search titles.
-
-        Not fully implemented yet — see issue tracker.
-        """
-        raise NotImplementedError("filtering and search are not implemented yet")
+        """Filter issues by status/priority and search titles."""
+        results = []
+        for issue_id in sorted(self.issues):
+            issue = self.issues[issue_id]
+            
+            # Filter by exact status if provided
+            if status is not None and issue.get("status") != status:
+                continue
+                
+            # Filter by exact priority if provided
+            if priority is not None and issue.get("priority") != priority:
+                continue
+                
+            # Filter by title substring if provided (case-insensitive search is standard)
+            if title_contains is not None and title_contains.lower() not in issue.get("title", "").lower():
+                continue
+                
+            results.append(dict(issue))
+            
+        return results
