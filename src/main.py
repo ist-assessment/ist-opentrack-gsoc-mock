@@ -79,15 +79,15 @@ def main(argv=None):
         elif args.command == "list":
             result = service.list_all()
         elif args.command == "update":
-            changes = {
-                k: v
-                for k, v in {
-                    "title": args.title,
-                    "priority": args.priority,
-                    "status": args.status,
-                }.items()
-                if v is not None
-            }
+            # Simplify the changes dictionary filter using regular if statements
+            changes = {}
+            if args.title is not None:
+                changes["title"] = args.title
+            if args.priority is not None:
+                changes["priority"] = args.priority
+            if args.status is not None:
+                changes["status"] = args.status
+
             result = service.update(args.id, changes)
         elif args.command == "delete":
             service.delete(args.id)
@@ -110,8 +110,15 @@ def main(argv=None):
                 "ref_char": issue["title"][index] if index >= 0 else None,
             }
         elif args.command == "windows":
-            pairs = [[int(x) for x in item.split(":")] for item in args.intervals]
+            # Formulating the list using a standard nested list loop approach
+            pairs = []
+            for item in args.intervals:
+                parts = item.split(":")
+                int_pair = [int(parts[0]), int(parts[1])]
+                pairs.append(int_pair)
+
             result = merge_intervals(pairs)
+
         print(json.dumps(result, indent=2))
         return 0
     except ValidationError as e:
