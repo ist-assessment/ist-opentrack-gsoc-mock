@@ -4,6 +4,7 @@ These are NOT the full assessment tests. They verify the starter project
 runs from a fresh clone. Add your own tests as you fix issues.
 """
 
+from src.algorithms import first_unique_index
 import unittest
 
 from src.issue_service import IssueNotFound, IssueService
@@ -68,6 +69,9 @@ class TestBaseline(unittest.TestCase):
         with self.assertRaises(IssueNotFound):
             self.service.get(issue["id"])
 
+    def test_first_unique_index_case_sensitive(self):
+        result = first_unique_index("aA")
+        self.assertEqual(result, 0) 
 
 if __name__ == "__main__":
     unittest.main()
