@@ -5,22 +5,28 @@ import os
 
 
 class JsonStorage:
-    """Persists issues to a single JSON file."""
+    """Saves and loads issues from a JSON file."""
 
     def __init__(self, path):
         self.path = path
 
     def load(self):
-        """Load issues from disk. Returns a dict of id -> issue."""
+        """Load issues from the file."""
         if not os.path.exists(self.path):
             return {}
-        with open(self.path, "r", encoding="utf-8") as f:
-            raw = json.load(f)
+
+        try:
+            with open(self.path, "r", encoding="utf-8") as f:
+                raw = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            return {}
+
         issues = raw.get("issues", {})
         return {int(k): v for k, v in issues.items()}
 
     def save(self, issues):
-        """Write issues to disk."""
+        """Save issues to the file."""
         payload = {"issues": {str(k): v for k, v in issues.items()}}
+
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2)
