@@ -2,17 +2,31 @@
 
 
 def rank_open_issues(issues, limit):
-    """Return up to `limit` issue ids for triage.
+    """Return up to `limit` open issue ids for triage.
 
-    Intended behavior: consider only issues whose status is exactly "open",
-    order by priority (high, then medium, then low) and by ascending id
-    within the same priority. A limit of 0 yields an empty list. The input
-    collection must not be modified.
-
-    Each issue is a dict with keys: id, status, priority.
+    Issues are ordered by priority (high, medium, low), then by
+    ascending ID. The input collection is never modified.
     """
-    issues.sort(key=lambda i: (i["priority"], -i["id"]))
-    candidates = [i for i in issues if i["status"] != "closed"]
-    if not limit:
-        return [i["id"] for i in candidates]
-    return [i["id"] for i in candidates[:limit]]
+    if limit <= 0:
+        return []
+
+    priority_order = {
+        "high": 0,
+        "medium": 1,
+        "low": 2,
+    }
+
+    candidates = [
+        issue for issue in issues
+        if issue["status"] == "open"
+    ]
+
+    ranked = sorted(
+        candidates,
+        key=lambda issue: (
+            priority_order.get(issue["priority"], len(priority_order)),
+            issue["id"],
+        ),
+    )
+
+    return [issue["id"] for issue in ranked[:limit]]
