@@ -11,8 +11,9 @@ def rank_open_issues(issues, limit):
 
     Each issue is a dict with keys: id, status, priority.
     """
-    issues.sort(key=lambda i: (i["priority"], -i["id"]))
-    candidates = [i for i in issues if i["status"] != "closed"]
-    if not limit:
-        return [i["id"] for i in candidates]
+    priorityorder = {"high":1, "medium":2, "low":3}
+    issues = sorted(issues, key = lambda i: (priorityorder[i["priority"]], [i["id"]]))
+    candidates = [i for i in issues if i["status"] == "open"]
+    if limit == 0:
+        return []
     return [i["id"] for i in candidates[:limit]]
