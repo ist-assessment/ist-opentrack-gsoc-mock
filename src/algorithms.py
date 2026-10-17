@@ -31,6 +31,7 @@ def merge_intervals(intervals):
     """
     if not intervals:
         return []
+    intervals = sorted(intervals, key=lambda interval: interval[0])
     merged = [list(intervals[0])]
     for start, end in intervals[1:]:
         last = merged[-1]
