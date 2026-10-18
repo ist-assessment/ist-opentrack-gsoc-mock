@@ -8,6 +8,7 @@ import unittest
 
 from src.issue_service import IssueNotFound, IssueService
 from src.validators import ValidationError
+from src.algorithms import first_unique_index, merge_intervals
 
 
 class MemoryStorage:
@@ -67,6 +68,24 @@ class TestBaseline(unittest.TestCase):
         self.service.delete(issue["id"])
         with self.assertRaises(IssueNotFound):
             self.service.get(issue["id"])
+
+class TestAlgorithms(unittest.TestCase):
+    def test_first_unique_index(self):
+        self.assertEqual(first_unique_index("aabbc"), 4)
+        self.assertEqual(first_unique_index("aabbcc"), -1)
+        self.assertEqual(first_unique_index(""), -1)
+        self.assertEqual(first_unique_index("abcabcde"), 6)
+
+    def test_merge_intervals(self):
+        self.assertEqual(
+            merge_intervals([[1, 3], [2, 4], [5, 7], [6, 8]]),
+            [[1, 4], [5, 8]],
+        )
+        self.assertEqual(
+            merge_intervals([[1, 2], [2, 3], [4, 5]]),
+            [[1, 3], [4, 5]],
+        )
+        self.assertEqual(merge_intervals([]), [])
 
 
 if __name__ == "__main__":
