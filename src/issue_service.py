@@ -12,10 +12,10 @@ class IssueService:
         self.storage = storage
         self.issues = self.storage.load()
 
-    def _next_id(self):
+   def _next_id(self):
         if not self.issues:
             return 1
-        return max(self.issues) + 1
+        return max(int(k) for k in self.issues) + 1
 
     def create(self, data):
         """Create a new issue and return it."""
